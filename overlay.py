@@ -52,14 +52,39 @@ class Overlay(Gtk.Window):
         self.canvas.connect("draw", self.draw)
         self.add(self.canvas)
         self.connect("realize", self.on_realize)
+        self.connect("map-event", self.on_map_event)
         self.connect("destroy", Gtk.main_quit)
         self.show_all()
         GLib.timeout_add(350, self.poll_config)
 
-    def on_realize(self, *_):
+    def apply_click_through(self):
+        """Give the Wayland surface an EMPTY input region.
+
+        set_pass_through() alone isn't enough for a top-level layer-shell
+        window: it can still eat mouse motion/clicks over another process.
+        An empty cairo.Region is forwarded to the compositor as a
+        zero-area wl_surface input region.
+        """
         window = self.get_window()
-        if window is not None:
+        if window is None:
+            return False
+        try:
+            empty = cairo.Region()
+            self.input_shape_combine_region(empty)
+            window.input_shape_combine_region(empty, 0, 0)
             window.set_pass_through(True)
+        except Exception as exc:
+            print(f"Cannot make overlay click-through: {exc}", file=sys.stderr)
+            self.destroy()  # Fail closed: never leave a fullscreen input blocker.
+        return False
+
+    def on_realize(self, *_):
+        self.apply_click_through()
+
+    def on_map_event(self, *_):
+        # Some backends replace their input region as the surface is mapped.
+        GLib.idle_add(self.apply_click_through)
+        return False
 
     def draw(self, widget, ctx):
         allocation = widget.get_allocation()
