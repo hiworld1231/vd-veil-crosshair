@@ -66,3 +66,14 @@ Both PNGs are fully transparent except for the dots, and are intended to be disp
 - Dot marks are not distance measurements in studs; don't infer a real trajectory from the provisional presets.
 
 **Planned next step:** inspect another recording with the overlay visible on targets of varying distances; refine profiles separately.
+
+
+## Quick calibration without editing JSON
+
+```bash
+python3 tune.py normal --stretch 1.15    # spread normal dots
+python3 tune.py special --stretch 0.9    # compress special dots
+python3 tune.py normal --dots "0,19,43,76,117,166"
+python3 tune.py --center-y 15           # compensate Sober title bar if needed
+python3 tune.py normal                 # show current offsets
+```
