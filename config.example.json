@@ -11,7 +11,7 @@
   "dot_radius": 1.4,
   "outline_width": 1.0,
   "profiles": {
-    "normal": {"zero_y": -40, "dots_y": [0, 19, 43, 76, 117, 166]},
-    "special": {"zero_y": -40, "dots_y": [0, 12, 29, 51, 78, 109]}
+    "normal": {"zero_y": 40, "dots_y": [0, 19, 43, 76, 117, 166]},
+    "special": {"zero_y": 40, "dots_y": [0, 12, 29, 51, 78, 109]}
   }
 }
