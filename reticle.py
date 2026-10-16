@@ -59,7 +59,10 @@ def paint(ctx, config: dict, width: int, height: int) -> None:
     profile = config["profiles"][profile_name]
     factor = height / max(1, float(config.get("reference_height", 1080)))
     x = width / 2 + float(config.get("center_offset_x", 0)) * factor
-    y = height / 2 + float(config.get("center_offset_y", 0)) * factor
+    # Profile zeroing is a real aiming correction, distinct from viewport alignment.
+    # Legacy configs without zero_y inherit the user's known working -40px baseline.
+    zero_y = float(profile.get("zero_y", -40))
+    y = height / 2 + (float(config.get("center_offset_y", 0)) + zero_y) * factor
     size = max(0.5, float(config.get("dot_radius", 1.5)) * factor)
     stroke = max(0.5, float(config.get("outline_width", 1.0)) * factor)
     alpha = max(0, min(1, float(config.get("opacity", 0.94))))
