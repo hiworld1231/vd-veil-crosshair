@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "active_profile": "normal",
+  "reference_height": 1080,
+  "center_offset_x": 0,
+  "center_offset_y": 0,
+  "color": "#83FFC1",
+  "outline_color": "#07140F",
+  "opacity": 0.98,
+  "center_dot_radius": 1.6,
+  "dot_radius": 1.4,
+  "outline_width": 1.0,
+  "profiles": {
+    "normal": {"dots_y": [0, 19, 43, 76, 117, 166]},
+    "special": {"dots_y": [0, 12, 29, 51, 78, 109]}
+  }
+}
