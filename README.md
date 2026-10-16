@@ -2,7 +2,7 @@
 
 Visual-only, click-through crosshair overlay for **The Veil** from Roblox **Violence District**, targeting **KDE Plasma Wayland / CachyOS**. Vertical green dots, no horizontal lines. Separate profiles for ordinary spear and Through the Veil. No Roblox script injection or aim assist.
 
-> **Uncalibrated test preset:** all current dot offsets are provisional. The supplied Oct 17 gameplay videos contain throws at various apparent distances but don't establish precise speed, drop, distances in studs, or a robust split between regular and special mode. These dots are NOT guaranteed aiming locations.
+> **Uncalibrated test preset:** only the approximate **-40px zero point for normal throws** comes from player testing. All other vertical marks are illustrative and must be calibrated in-game. The special-ability zero point is also provisional. This overlay does not read distance from Roblox.
 
 ## Quick start: CachyOS / Arch Linux
 
@@ -34,9 +34,11 @@ On first launch, the program creates:
 
 Edit it while the overlay runs; changes reload automatically (about every 350ms). Relevant settings:
 
-- `profiles.normal.dots_y`: ordinary spear dots **below** the central aim dot. Provisional preset: `[0, 19, 43, 76, 117, 166]`.
+- `profiles.normal.zero_y`: zero/reference point offset. Default `-40` in reference pixels based on the user's already useful existing crosshair (NOT a computed ballistic correction).
+- `profiles.special.zero_y`: independent zero point for Through the Veil. Starts at `-40` only until measured.
+- `profiles.normal.dots_y`: marks BELOW the zero point, to place on targets at progressively greater ranges. Values are test placeholders: `[0, 19, 43, 76, 117, 166]`.
 - `profiles.special.dots_y`: Through the Veil dots. Provisional preset: `[0, 12, 29, 51, 78, 109]`.
-- `center_offset_x`, `center_offset_y`: adjust alignment. Positive Y moves downward. **Sober window title bar** seen in the footage is about 30px tall, which *may* require an approximately `15`px Y adjustment when the window reaches the bottom edge. Set `0` for a properly centered fullscreen viewport.
+- `center_offset_x`, `center_offset_y`: viewport alignment ONLY. Normally leave at `0` in fullscreen; these are not ballistic offsets. For aim correction use profile `zero_y` instead. Positive values move down. Configs from the first release without `zero_y` still use -40 via fallback.
 - `dot_radius`, `center_dot_radius`, `outline_width`, `opacity`, `color` adjust visuals.
 - `reference_height` sets pixel scaling relative to 1080p. FOV changes invalidate calibration.
 
@@ -68,12 +70,30 @@ Both PNGs are fully transparent except for the dots, and are intended to be disp
 **Planned next step:** inspect another recording with the overlay visible on targets of varying distances; refine profiles separately.
 
 
-## Quick calibration without editing JSON
+## Calibrate ONLY throw height (without measuring studs)
+
+First update the project and launch the new mouse-transparent overlay:
 
 ```bash
-python3 tune.py normal --stretch 1.15    # spread normal dots
-python3 tune.py special --stretch 0.9    # compress special dots
-python3 tune.py normal --dots "0,19,43,76,117,166"
-python3 tune.py --center-y 15           # compensate Sober title bar if needed
-python3 tune.py normal                 # show current offsets
+git pull
+python3 overlay.py
 ```
+
+In a different terminal while it is running, use these commands:
+
+```bash
+python3 tune.py normal --zero-y -40    # known starting zero for the NORMAL throw
+python3 tune.py special --zero-y -40   # special is an unverified starting point
+python3 tune.py normal                # inspect existing values
+python3 tune.py normal --dot 2 45     # move ONE mark: index 2 -> 45px BELOW zero
+python3 tune.py normal --dots "0,19,43,76,117,166"
+python3 tune.py special --stretch 0.9
+```
+
+Each change appears without restarting the overlay. `--zero-y` is independent for normal and special, and `--center-y` is reserved for visual alignment with Sober's actual viewport.
+
+**Simple no-studs test:** stand still, place a visible target on the zero dot, and throw normally. If the spear lands below it, put the target on the FIRST lower dot and try again from the same spot. Adjust that dot's offset with `--dot 1 NUMBER` until it hits. Then back up and repeat with a farther dot. Repeat independently for the special ability. The footage's release animations are not used for this calibration.
+
+The lower dots are aiming references, NOT proven distances. A stationary target, unchanged FOV/resolution, and impact marks help. Since target distance isn't measured, the marks won't correspond to known studs until a separate distance reference is available.
+
+**Mouse safety:** The new overlay uses an empty GDK input region in addition to pass-through. If your compositor still captures input, press Ctrl+C in its terminal. This KDE + Sober combination still requires device testing.
