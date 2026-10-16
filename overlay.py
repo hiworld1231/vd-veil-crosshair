@@ -12,8 +12,9 @@ try:
     import cairo
     import gi
     gi.require_version("Gtk", "3.0")
+    gi.require_version("Gdk", "3.0")
     gi.require_version("GtkLayerShell", "0.1")
-    from gi.repository import Gdk, GLib, Gtk, GtkLayerShell
+    from gi.repository import Gtk, Gdk, GLib, GtkLayerShell
 except (ImportError, ValueError) as err:
     sys.exit("Install: sudo pacman -S --needed python-gobject python-cairo gtk3 gtk-layer-shell\n" + str(err))
 
