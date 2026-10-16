@@ -55,6 +55,6 @@ if any(v is not None for v in (args.dots, args.stretch, args.dot, args.zero_y, a
     tmp.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     tmp.replace(target)
 
-print(f"{args.profile}: zero_y={profile.get('zero_y', -40)} px")
+print(f"{args.profile}: zero_y={profile.get('zero_y', 40)} px")
 print(f"  dots_y={profile['dots_y']}")
 print(f"  center_offset_y={cfg.get('center_offset_y', 0)} px (viewport only)")
